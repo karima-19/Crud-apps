@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container m-5 p-3 mx-auto rounded shadow">
+        <h2>Soumission de Candidature</h2>
+        <form action="">
+            <div class="row"><label for="nom">Nom Complet :</label></div>
+            <div class="row mb-3"><input type="text" id="nom" placeholder="Votre nom ..." class="form-control"></div>
+            <div class="row"><label for="ville">Ville :</label></div>
+            <div class="row mb-3">
+                <select id="ville" class="form-control">
+                    <option value=""> -- choisire votre ville -- </option>
+                    <option value="Agadir">Agadir</option>
+                    <option value="Safi">Safi</option>
+                    <option value="Oujda">Oujda</option>
+                    <option value="Casablanca">Casablanca</option>
+                    <option value="Titouan">Titouan</option>
+                </select>
+            </div>
+            <div class="row"><label for="skill">Compétences :</label></div>
+            <div class="row mb-3">
+                <select id="skill" class="form-control">
+                    <option value="">-- choisire votre Compétence -- </option>
+                    <option value="Médecin">Médecin</option>
+                    <option value="Infirmière">Infirmière</option>
+                    <option value="RH">RH</option>
+                </select>
+            </div>
+            <div class="row"><label for="dispo">Disponibilité :</label></div>
+            <div class="row mb-3">
+                <select id="dispo" class="form-control">
+                    <option value="">-- choisire votre Disponibilité -- </option>
+                    <option value="sur appel">sur appel</option>
+                    <option value="A temps plein">A temps plein</option>
+                    <option value="Disponibilité flexible">Disponibilité flexible</option>
+                </select>
+            </div>
+            <div class="row"><label for="typeMiss">Type de mission souhaitée :</label></div>
+            <div class="row mb-3">
+                <select id="typeMiss" class="form-control">
+                    <option value="">-- choisire votre type de mission -- </option>
+                    <option value="consultations médicales">consultations médicales</option>
+                    <option value="distribution de nourriture">distribution de nourriture</option>
+                    <option value="collecte de vetements">collecte de vetements</option>
+                </select>
+            </div>
+            <div class="row"><label for="email">Email :</label></div>
+            <div class="row mb-3"><input type="email" id="email" placeholder="votre email ..." class="form-control"></div>
+            <div class="row"><label for="psw">Mot de passe :</label></div>
+            <div class="row"><input type="password" id="psw" placeholder="votre mot de passe ..." class="form-control"></div>
+            <div class="row my-3 text-end">
+                <div class="col"><button type="button" id="button" class="btn w-50 btn-outline-info rounded">Soumettre</button></div>
+            </div>
+        </form>
+        <table class="table table-bordered table-responsive">
+            <thead>
+                <th>Nom Complet</th>
+                <th>Ville</th>
+                <th>Compétences</th>
+                <th>Disponibilité</th>
+                <th>Type de mission</th>
+                <th>Action</th>
+            </thead>
+            <tbody id="tbody">
+                
+            </tbody>
+        </table>
+    </div>
+    <script>
+        let candidats=JSON.parse(localStorage.getItem("candidats")) || [];
+        function save(){
+            localStorage.setItem('candidats', JSON.stringify(candidats));
+        };
+
+
+        // affichage
+        function display(){
+            let tbody=document.querySelector('#tbody');
+            tbody.innerHTML="";
+
+            candidats.forEach(function(candidat, index){
+                let tr=document.createElement('tr');
+                tr.innerHTML=`
+                    <td>${candidat.name}</td>
+                    <td>${candidat.city}</td>
+                    <td>${candidat.skill}</td>
+                    <td>${candidat.free}</td>
+                    <td>${candidat.type}</td>
+                `;
+
+                //-----button delete
+                let td=document.createElement('td');
+                let del=document.createElement('button');
+                del.textContent='delete';
+                del.className='btn btn-danger btn-sm mx-3';
+                
+                del.addEventListener('click', function(){
+                    candidats.splice(index, 1);
+                    save();
+                    display();
+                });
+
+                //-----button edit
+                let edit=document.createElement('button');
+                    edit.textContent='modify';
+                    edit.className='btn btn-success btn-sm mx-3';
+                    edit.addEventListener('click', function(){
+                        let new_name=prompt("saisir new name");
+                        let new_city=prompt("saisir new city");
+                        let new_skill=prompt("saisir new skill");
+                        let new_free=prompt("saisir new free");
+                        let new_type=prompt("saisir new type");
+                        let new_email=prompt("saisir new email");
+                        let new_password=prompt("saisir new password");
+                        candidats[index] = {
+                            name: new_name || candidat.name,
+                            city: new_city || candidat.city,
+                            skill: new_skill || candidat.skill,
+                            free: new_free || candidat.free,
+                            type: new_type || candidat.type,
+                            email: new_email || candidat.email,
+                            passW: new_password || candidat.passW
+                        };
+                        save();
+                        display();
+                    });
+
+                    td.append(del, edit);
+                    tr.appendChild(td);
+                    tbody.append(tr);
+                })
+            }
+
+
+        //logic de recuperer les donnees de form
+        document.querySelector('#button').addEventListener('click', function(){
+            let name=document.querySelector('#nom').value;
+            let city=document.querySelector('#ville').value;
+            let skill=document.querySelector('#skill').value;
+            let free=document.querySelector('#dispo').value;
+            let type=document.querySelector('#typeMiss').value;
+            let email=document.querySelector('#email').value;
+            let passW=document.querySelector('#psw').value;
+
+            //validation
+            if (name=="" || city=="" || skill=="" || free=="" || type==""){alert('you must fill this field');return;};
+            if (email=="" || passW.length<6){alert('you must fill this field');return;}
+
+            let candidat={name, city, skill, free, type, email, passW};
+            candidats.push(candidat);
+            
+            console.log(candidat);
+            /*document.querySelector('#nom').value="";
+            document.querySelector('#ville').value="";
+            document.querySelector('#skill').value="";
+            document.querySelector('#dispo').value="";
+            document.querySelector('#email').value="";
+            document.querySelector('#psw').value="";*/
+            document.querySelector('form').reset();
+            save();
+            display();
+        })
+        display()
+
+    </script>
+</body>
+</html>
