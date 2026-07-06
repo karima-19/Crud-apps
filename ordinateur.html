@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <label for="carte">Carte mere</label>
+        <select name="" id="carte">
+            <option value="" selected disabled></option>
+            <option value="700">Carte Assus</option>
+            <option value="600">Carte VIA</option>
+            <option value="500">Carte sis</option>
+        </select>
+    </div><br>
+    <div>
+        <label for="ecran">Ecran</label>
+        <div>
+            taille:
+            <input type="radio" name="taille" value="plat" id="plat"><label for="plat">Plat</label><input type="radio" name="taille" value="cathodique" id="cathodique">
+            <label for="cathodique">cathodique</label></div>
+        <div>type :<input type="radio" name="type" value="15" id="15-"><label for="15-">15</label><input type="radio" name="type" value="17" id="17-"><label for="17-">17</label></div>
+    </div><br>
+    <div>
+        <label for="option">Options</label><br>
+        <div style="margin-left: 20px;">
+            <input type="checkbox" id="sat" value="900"><label for="sat">Carte Satellite</label><br>
+            <input type="checkbox" id="Impr" value="600"><label for="Impr">Impriment</label><br>
+            <input type="checkbox" id="scan" value="500"><label for="scan">scanner</label>
+        </div>
+    </div><br>
+    <div>
+        <label for="cat">categorie</label>
+        <select name="" id="cat">
+            <option value="0" selected disabled>-- choisir une categorie --</option>
+            <option value="0.2">etudiant</option>
+            <option value="0.1">autres</option>
+        </select>
+    </div><br>
+    <div><label for="taux">Taux de reduction correspondant</label><input type="number" id="taux" readonly></div><br>
+    <div><button type="button" id="btn">calculer</button><label for="cout">Ce PC vous coutera</label><input type="number" id="cout" readonly></div>
+    <script>
+        let redu=0;
+        document.querySelector('#cat').addEventListener('change', function(){
+            let reduction=parseFloat(document.querySelector('#cat').value);
+            let taux=document.querySelector('#taux');
+            taux.value=reduction;
+            redu=reduction;
+        });
+        document.querySelector('#btn').addEventListener('click', function(){
+            let checks_total=0;
+            let ecr=0;
+            let avec_red=0;
+            let sans_red=0;
+            let crt=parseInt(document.querySelector('#carte').value);
+            let t=document.querySelector('input[name=taille]:checked').value;
+            console.log(t);
+            let tp=document.querySelector('input[name=type]:checked').value;
+            console.log(tp);
+            let cks=document.querySelectorAll('input[type=checkbox]:checked');
+            cks.forEach(function(ck){checks_total+=parseFloat(ck.value)});
+            
+            if(t=="plat" && tp=="15"){ecr=1500}
+            else if(t=="plat" && tp=="17"){ecr=2000}
+            else if(t=="cathodique" && tp=="15"){ecr=1000}
+            else{ecr=2500};
+
+            sans_red=parseFloat(crt+ecr+checks_total);
+            avec_red=parseFloat(sans_red-(sans_red*redu));
+            console.log(avec_red)
+            let coux=document.querySelector('#cout');
+            coux.value=avec_red;
+        });
+    </script>
+</body>
+</html>
