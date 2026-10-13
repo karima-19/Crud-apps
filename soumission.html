@@ -74,6 +74,8 @@
     </div>
     <script>
         let candidats=JSON.parse(localStorage.getItem("candidats")) || [];
+        let editIndex = null
+        
         function save(){
             localStorage.setItem('candidats', JSON.stringify(candidats));
         };
@@ -111,24 +113,18 @@
                     edit.textContent='modify';
                     edit.className='btn btn-success btn-sm mx-3';
                     edit.addEventListener('click', function(){
-                        let new_name=prompt("saisir new name");
-                        let new_city=prompt("saisir new city");
-                        let new_skill=prompt("saisir new skill");
-                        let new_free=prompt("saisir new free");
-                        let new_type=prompt("saisir new type");
-                        let new_email=prompt("saisir new email");
-                        let new_password=prompt("saisir new password");
-                        candidats[index] = {
-                            name: new_name || candidat.name,
-                            city: new_city || candidat.city,
-                            skill: new_skill || candidat.skill,
-                            free: new_free || candidat.free,
-                            type: new_type || candidat.type,
-                            email: new_email || candidat.email,
-                            passW: new_password || candidat.passW
-                        };
-                        save();
-                        display();
+                        document.querySelector('#nom').value = candidat.name;
+                        document.querySelector('#ville').value = candidat.city;
+                        document.querySelector('#skill').value = candidat.skill;
+                        document.querySelector('#dispo').value = candidat.free;
+                        document.querySelector('#typeMiss').value = candidat.type;
+                        document.querySelector('#email').value = candidat.email;
+                        document.querySelector('#psw').value = candidat.passW;
+                        
+                        editIndex=index;
+                        let btn = document.querySelector('#button');
+                        btn.textContent = 'modifier';
+                        btn.className = 'btn w-50 btn-warning rounded'; 
                     });
 
                     td.append(del, edit);
@@ -153,7 +149,17 @@
             if (email=="" || passW.length<6){alert('you must fill this field');return;}
 
             let candidat={name, city, skill, free, type, email, passW};
+            
+            if (editIndex===null){
             candidats.push(candidat);
+            }else{
+                candidats[editIndex]=candidat;
+                editIndex=null;
+
+                let btn = document.querySelector('#button');
+                btn.textContent = 'Soumettre';
+                btn.className = 'btn w-50 btn-outline-info rounded';
+            }
             
             console.log(candidat);
             document.querySelector('form').reset();
